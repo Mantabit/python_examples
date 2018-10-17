@@ -21,3 +21,23 @@ for i in range(0,N):
     for j in range(0,N):
         plt.text(j-0.25,N-1-i+0.1,"%.2f"%randmat[i,j])
 plt.colorbar()
+
+
+
+#create a subplot
+
+plt.figure(2)
+x=np.linspace(-5,5,100)
+y1=np.square(x)
+y2=np.sinc(x)
+
+plt.subplot(2,1,1)
+plt.plot(x,y1,"-")
+plt.grid()
+plt.ylabel("$y_{1}$")
+
+plt.subplot(2,1,2)
+plt.plot(x,y2,"-")
+plt.grid()
+plt.xlabel("$x$")
+plt.ylabel("$y_{2}$")
