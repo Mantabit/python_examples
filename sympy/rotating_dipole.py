@@ -1,13 +1,16 @@
-import symutils
-
+from symutils import C,lambdifyVector,norm
 import numpy as np
 from sympy.vector import Del
 from sympy import init_printing, simplify, symbols
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
+'''
+This file plots the field of a magnetic dipole in a two and three dimensional coordinate system
+'''
+
 #initializations
-#################################################33
+#################################################
 #initialize printing
 init_printing()
 #define some symbols
