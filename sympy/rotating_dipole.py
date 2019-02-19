@@ -1,4 +1,4 @@
-from symutils import C,lambdifyVector,norm
+from symutils import C,lambdifyVector,norm,nablaVec,tensMul
 import numpy as np
 from sympy.vector import Del
 from sympy import init_printing, simplify, symbols
@@ -41,16 +41,20 @@ xs,ys,zs,Bxs,Bys,Bzs=[],[],[],[],[],[]
 #            Bys.append(Bc[1])
 #            Bzs.append(Bc[2])
             
-grid=np.linspace(-10,10,20)
-for pz in grid:
-    for py in grid:
+gridX=np.linspace(-2,2,20)
+gridY=np.linspace(-2,2,20)
+for pz in gridX:
+    for py in gridY:
         ys.append(py)
         zs.append(pz)
-        Bc=B_dir_lam(0,py,pz)
+        Bc=B_dir_lam((0,py,pz))
         Bys.append(Bc[1])
         Bzs.append(Bc[2])
             
-fig=plt.figure()
+fig=plt.subplot(1,2,1)
 #ax=Axes3D(fig)
 #ax.quiver(xs,ys,zs,Bxs,Bys,Bzs,length=0.5)
-plt.quiver(ys,zs,Bys,Bzs)
+plt.quiver([y+1 for y in ys],zs,Bys,Bzs,color="red",headwidth=2,headlength=2)
+plt.quiver(1,0,0,5,color="red")
+plt.quiver(0,0,5,0,color="blue")
+plt.grid()

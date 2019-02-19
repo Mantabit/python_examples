@@ -1,8 +1,8 @@
 import sympy as sym
 import numpy as np
-from sympy.abc import x,y,z
-from sympy.vector import CoordSys3D
-from sympy import lambdify, diff
+from sympy.abc import x,y,z,t
+from sympy.vector import CoordSys3D, Del
+from sympy import lambdify, diff, init_printing
 
 C=CoordSys3D('C')
 uvecs=[C.i,C.j,C.k]
@@ -21,10 +21,17 @@ def lambdifyVector(symvec):
     x_lam=lambdify((x,y,z),symvec.dot(C.i))
     y_lam=lambdify((x,y,z),symvec.dot(C.j))
     z_lam=lambdify((x,y,z),symvec.dot(C.k))
-    return lambda xx,yy,zz:np.array([x_lam(xx,yy,zz),y_lam(xx,yy,zz),z_lam(xx,yy,zz)])
+    return lambda rr:np.array([x_lam(rr[0],rr[1],rr[2]),y_lam(rr[0],rr[1],rr[2]),z_lam(rr[0],rr[1],rr[2])])
+
+def lambdifyVectorTime(symvec):
+    symvec=symvec.subs([(C.x,x),(C.y,y),(C.z,z)])
+    x_lam=lambdify((x,y,z,t),symvec.dot(C.i))
+    y_lam=lambdify((x,y,z,t),symvec.dot(C.j))
+    z_lam=lambdify((x,y,z,t),symvec.dot(C.k))
+    return lambda rr,tt:np.array([x_lam(rr[0],rr[1],rr[2],tt),y_lam(rr[0],rr[1],rr[2],tt),z_lam(rr[0],rr[1],rr[2],tt)])
 
 #computed the gradient of a vector (which is a dyad)
-def nablavec(symvec):
+def nablaVec(symvec):
     result=[[0,0,0] for i in range(0,3)]
     for i in range(0,3):
         for j in range(0,3):
@@ -32,7 +39,7 @@ def nablavec(symvec):
     return result
 
 #multiplies a dyad with a vector
-def tensmul(tens,vec):
+def tensMul(tens,vec):
     comps=[]
     for i in range(0,3):
         comps.append(tens[i][0]*vec.dot(C.i)+tens[i][1]*vec.dot(C.j)+tens[i][2]*vec.dot(C.k))
@@ -41,3 +48,13 @@ def tensmul(tens,vec):
 #computes the euclidean norm of the vector
 def norm(vec):
     return sym.sqrt(vec.dot(C.i)**2+vec.dot(C.j)**2+vec.dot(C.k)**2)
+
+#initializations
+#################################################
+#initialize printing
+init_printing()
+#nabla operator
+nabla=Del()
+#location vector
+r=C.x*C.i+C.y*C.j+C.z*C.k
+#################################################
