@@ -28,40 +28,45 @@ def lambdifyVector(symvec):
 Symbolic Computations
 """
 
-#position of dipole 0
-###d_0=-R.i-R.j-R.k
-d_0=-1*R.k
+#positions of the 4 dipoles
+ds=[-R.k+R.i,-R.k+R.j,-R.k-R.i,-R.k-R.j]
 #dipole moment of dipole 1
-###p_0=R.i+R.k
-p_0=R.k
-#positional vector from coordinate system of dipole 0
-r_0=r-d_0
-r_0_u=toUnit(r_0)
-#magnetic field of dipole 0
-B=(3*p_0.dot(r_0_u)*r_0_u-p_0)/(sqrt(r_0.dot(r_0))**3)
+ps=[R.k-R.i,R.k-R.j,R.k+R.i,R.k+R.j]
+#positional vectors for dipole centric coordinate systems and corresponding unit vectors
+r0s=[r-d for d in ds]
+r0us=[r0/(sqrt(r0.dot(r0))) for r0 in r0s]
+#magnetic fields of the dipoles
+B=[(3*ps[k].dot(r0us[k])*r0us[k]-ps[k])/(sqrt(r0s[k].dot(r0s[k]))**3) for k in range(0,4)]
+B=B[0]+B[1]+B[2]+B[3]
 B_num=lambdifyVector(B)
 #force on a magnetic particle
 delop=Del()
 F=-alpha*delop.gradient(-B.dot(B),doit=True)
 F_num=lambdifyVector(F)
 
-[X,Z]=np.meshgrid(np.linspace(-5,5,20),np.linspace(3,10,20))
+#[X,Z]=np.meshgrid(np.linspace(-2,2,20),np.linspace(3,10,20))
+[X,Y]=np.meshgrid(np.linspace(-2,2,40),np.linspace(-2,2,40))
 Bu,Bv=np.zeros(X.shape),np.zeros(X.shape)
 Fu,Fv=np.zeros(X.shape),np.zeros(X.shape)
 
 for i in range(0,X.shape[0]):
     for j in range(0,X.shape[1]):
+        """
         field=B_num([X[i,j],0,Z[i,j]])
         force=F_num([X[i,j],0,Z[i,j]])
         Bu[i,j],Bv[i,j]=field[0],field[2]
         Fu[i,j],Fv[i,j]=force[0],force[2]
-
+        """
+        field=B_num([X[i,j],Y[i,j],0])
+        force=F_num([X[i,j],Y[i,j],0])
+        Bu[i,j],Bv[i,j]=field[0],field[1]
+        Fu[i,j],Fv[i,j]=force[0],force[1]
 
 """
 Plotting & Visualizing Fields
 """
 #scale the magnitude of vectors logarithmically
-scaleLog=True
+scaleLog=False
 if scaleLog:
     Bmag=np.sqrt(Bu**2+Bv**2)
     Bu=Bu/(Bmag)*np.log10(10*Bmag/Bmag.min())
@@ -71,12 +76,12 @@ if scaleLog:
     Fv=Fv/(Fmag)*np.log10(10*Fmag/Fmag.min())
 #plot regular field
 plt.subplot(211)
-plt.quiver(X,Z,Bu,Bv,color="blue")
+plt.quiver(X,Y,Bu,Bv,color="blue")
 plt.title("$\mathbf{B}(\mathbf{r})$")
 plt.xlabel("x")
 plt.ylabel("z")
 plt.subplot(212)
-plt.quiver(X,Z,Fu,Fv,color="orange")
+plt.quiver(X,Y,Fu,Fv,color="orange")
 plt.title("$\mathbf{F}(\mathbf{r})$")
 plt.xlabel("x")
 plt.ylabel("z")
