@@ -2,11 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 from math import log2
+from quicksort_partition import partition
 
-N=10
+N=20
 numbers=np.random.rand(2**N)
 
-#merge sort implementation
+"""
+This function implements the merge sort algorithm
+"""
 def mergeSort(array,i,N):
     if(N==1):
         return
@@ -32,14 +35,36 @@ def mergeSort(array,i,N):
             sortedarr.append(array[int(i+ind1)])
             ind1+=1
     array[int(i):int(i+N)]=np.array(sortedarr)
-            
-#analyse the runtime
+
+"""
+This function implements the quicksort algorithm
+"""
+def quickSort(arr,lo,hi):
+    #partition the array in two subarrays whose elements are smaller or larger than the pivot arr[hi]
+    #i is the separation index which divided the two subarrays
+    if(hi<=lo):
+        return
+    partIndex=partition(arr,lo,hi)
+#    print((hi,lo,partIndex))
+#    print(arr)
+#    time.sleep(0.4)
+    quickSort(arr,lo,partIndex-1)
+    quickSort(arr,partIndex+1,hi)
+     
+"""
+Plot an analyze the run time of a certain algorithm
+"""
+
+#choose the sorting algorithm to analyse
+sortingAlgo=lambda arr : quickSort(arr,0,len(arr)-1)
+#sortingAlgo=lambda arr : mergeSort(arr,0,len(arr))
+
 ns=[2**i for i in range(10+1,20+1)]
 times=[]
 for n in ns:
     numbers=np.random.rand(n)
     start=time.time()
-    mergeSort(numbers,0,len(numbers))
+    sortingAlgo(numbers)
     stop=time.time()
     times.append(stop-start)
 
