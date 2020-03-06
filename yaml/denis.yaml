@@ -1,0 +1,11 @@
+Denis:
+  Name: "Denis von Arx"
+  Age: 25
+  Occupation: "Electrical Engineer"
+  Male: True
+  
+Marvin:
+  Name: "Marvin Mustermann"
+  Age: 27
+  Occupation: "Electrical Engineer"
+  Male: True
