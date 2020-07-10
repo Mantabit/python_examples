@@ -15,6 +15,7 @@ Laptop 2 (Client)
 * Preferred DNS : < EMPTY >
 * Alternate DNS : < EMPTY >
 
+Remarks
 * The choice of the gateway is arbitrary since no gateway is present in the LAN.
 * It is important that on the server side code, the server address is defined as `server_address = ('192.168.0.1', 9878)`. `server_address = ('localhost', 9878)` will not work because the server only accepts TCP
 requests on from the IP `localhost` in this case (e.g. TCP requests from processes which run on the server).
